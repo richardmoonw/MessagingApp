@@ -12,12 +12,16 @@ app.get('/script.js', (req, res) => {
 
 app.get('/bootstrap.css', (req, res) => {
     res.sendFile(__dirname + '/bootstrap.css');
-})
+});
 
 io.on('connect', socket => {
+    console.log('new user');
     socket.on('send-chat-message', message => {
-        socket.broadcast.emit('chat-message', message)
+        console.log(message);
+        socket.broadcast.emit('message-chat', message)
     });
 });
 
-var myapp = app.listen(8080);
+app.listen(8080, () => {
+
+});
