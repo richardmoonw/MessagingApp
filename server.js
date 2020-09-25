@@ -1,7 +1,6 @@
 const io = require('socket.io')(3000);
 const express = require('express');
 const net = require('net');
-const ASCPMessage = require('./message_template');
 const app = express();
 
 // Routing function to provide the index page.
@@ -14,6 +13,11 @@ app.get('/script.js', (req, res) => {
     res.sendFile(__dirname + '/script.js');
 });
 
+// Routing function to provide the message_template.js file to the index page.
+app.get('/message_template.js', (req, res) => {
+    res.sendFile(__dirname + '/message_template.js');
+});
+
 // Routing function to provide the bootstrap.css file to the index page.
 app.get('/bootstrap.css', (req, res) => {
     res.sendFile(__dirname + '/bootstrap.css');
@@ -24,17 +28,20 @@ io.on('connect', socket => {
     console.log('Own client connected');
 
     // Function used to start listening for socket events with the specified event name. 
-    socket.on('message', message => {
-        console.log(message.toString());
-    });
     socket.on('send-chat-message', (message, destination) => {
-        var c = net.createConnection(2022, destination);
-        c.on("connect", () => {
-            let message_protocol = new ASCPMessage();
-            message_protocol.setDatos(message);
-            var buffer = Buffer.from(message_protocol.getDatos(), 'ascii');
-            c.write(buffer);
-        });
+        var bufferedMessage = Buffer.from(message, 'ascii');
+
+        // Emit a message to all the clients connected to the socket.
+        socket.broadcast.emit('external_message', message);
+
+        // If it is an external destination (not this server), create a new socket and send the message.
+        if (destination != '') {
+            var c = net.createConnection(2022, destination);
+            c.on("connect", () => {
+                c.write(bufferedMessage);
+                c.destroy();
+            });
+        }
     });
 });
 

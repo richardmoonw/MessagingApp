@@ -50,12 +50,6 @@ class ASCPMessage {
             t = t + this.message[i]
         }
     }
-
-    convert() {
-        for(var i = 0; i < this.message.length; i++) {
-            this.message[i] = this.message[i] & 0xFF;
-        }
-    }
 }
 
-module.exports = ASCPMessage;
+export default ASCPMessage;
