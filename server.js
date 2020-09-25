@@ -1,6 +1,7 @@
 const io = require('socket.io')(3000);
 const express = require('express');
 const net = require('net');
+const ASCPMessage = require('./message_template');
 const app = express();
 
 // Routing function to provide the index page.
@@ -26,11 +27,13 @@ io.on('connect', socket => {
     socket.on('message', message => {
         console.log(message.toString());
     });
-    socket.on('send-chat-message', message => {
-        console.log(message);
-        var c = net.createConnection(2022, '127.0.0.1');
+    socket.on('send-chat-message', (message, destination) => {
+        var c = net.createConnection(2022, destination);
         c.on("connect", () => {
-            c.write('Hello, server! Love, Client.');
+            let message_protocol = new ASCPMessage();
+            message_protocol.setDatos(message);
+            var buffer = Buffer.from(message_protocol.getDatos(), 'ascii');
+            c.write(buffer);
         });
     });
 });
@@ -52,4 +55,6 @@ server.listen(2020, () => {
 });
 
 // Function used to initialize a server and start listening at a given port.
-app.listen(8080);
+app.listen(8080, () => {
+    
+});
