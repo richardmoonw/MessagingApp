@@ -45,6 +45,7 @@ io.on('connect', socket => {
     });
 });
 
+// Create a "new" server to be listening at port 2020.
 const server = net.createServer((socket) => {
     console.log("Client connected");
 
@@ -62,6 +63,4 @@ server.listen(2020, () => {
 });
 
 // Function used to initialize a server and start listening at a given port.
-app.listen(8080, () => {
-    
-});
+app.listen(8080);
