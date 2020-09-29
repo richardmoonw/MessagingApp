@@ -54,7 +54,8 @@ const server = net.createServer((socket) => {
     });
 
     socket.on('data', (data) => {
-        io.emit('external_message', data.toString());
+        message = new Uint8Array(data.buffer);
+        io.emit('external_message', message);
     })
 });
 

@@ -6,14 +6,39 @@
         <script defer src='http://192.168.1.99:3000/socket.io/socket.io.js'></script>
         <script defer type="module" src='message_template.js'></script>
         <script defer type="module" src='script.js'></script>
-        
+        <script src="https://kit.fontawesome.com/0ea208dbc6.js" crossorigin="anonymous"></script>
     </head>
     <body>
         <div class="container">
             <div class="row"style="margin: 0.5rem; border-radius: 5px;">
                 <!-- Left Panel -->
-                <div style="background-color: #eaeaea; border-right: solid 1px #cccccc;" class="col-lg-4">
-                    Chats
+                <div style="background-color: #fff; border-right: solid 1px #cccccc;" class="col-lg-4">
+                    <div style="background-color: #eaeaea;" class="row">
+                        <div class="col-lg-2" style="margin: 0.5rem; text-align: center; box-sizing: border-box;" >
+                            <img style="border-radius: 100px;" width="120%" src="https://diariolalibertad.com/sitio/wp-content/uploads/2020/09/Cristiano-Ronaldo.jpg">
+                        </div>
+                        <div class="col-lg-4"></div>
+                        <div class="col-lg-1" style="margin-top: 0.8rem;">
+                            <i class="fa fa-circle-o-notch fa-lg" style="color: gray; text-align: center;" aria-hidden="true"></i>
+                        </div>
+                        <div class="col-lg-1" style="margin-top: 0.8rem; margin-left: 1.5rem;">
+                            <i class="fa fa-envelope fa-lg" style="color: gray; text-align: center;" aria-hidden="true"></i>
+                        </div>
+                        <div class="col-lg-1" style="margin-top: 0.8rem; margin-left: 1.5rem;">
+                            <i class="fa fa-ellipsis-v fa-lg" style="color: gray; text-align: center;" aria-hidden="true"></i>
+                        </div>
+                    </div>
+
+                    <div class="row" style="background-color: #eaeaea;">
+                        <div style="padding: 0.5rem;" class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" style="background-color: white; border-radius: 0.5rem 0rem 0rem 0.5rem;">
+                                    <i class="fas fa-search"></i>
+                                </span>
+                            </div>
+                            <input type="text" class="form-control" placeholder="Search or start new chat" style="border-radius: 0rem 0.5rem 0.5rem 0rem;">
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Right Panel -->
@@ -23,30 +48,34 @@
                             <img style="border-radius: 100px;" width="120%" src="https://vignette.wikia.nocookie.net/disney/images/5/56/Profile_-_Rex.jpeg/revision/latest/window-crop/width/200/x-offset/14/y-offset/0/window-width/1032/window-height/1031?cb=20190313050619">
                         </div>
                         <div style="margin-top: 0.5rem; padding-left: 0;" class="col-lg-3">
-                            <p style="font-size: 1.15rem;"><strong>Ricardo</strong></p>
+                            <p style="font-size: 1.05rem;">General</p>
                         </div>
                     </div>
 
                     <!-- Message Container -->
-                    <div class="row" style="height: 33vw;">
-                        <div id="message-container">
+                    <div class="row" style="height: 42vw; background-image: url('https://res.cloudinary.com/practicaldev/image/fetch/s--WAKqnINn--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://thepracticaldev.s3.amazonaws.com/i/tw0nawnvo0zpgm5nx4fp.png');">
+                        <div style="width: 100%;" id="message-container"></div>
+                    </div>
                     
-                        </div></div>
                     <form id="message-form">
-                        <div class="form-group">
-                            <label for="destination">Destination:</label>
-                            <input type="text" class="form-control" id="destination">
+                        <div class="row" style="background-color: #eaeaea; padding: 0.5rem 0rem;">
+                            <div class="col-lg-6">
+                                <input type="text" class="form-control" id="destination" style="border-radius: 10rem;"
+                                        placeholder="Type the destination">
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="message">Message:</label>
-                            <textarea class="form-control" rows="3" id="message"></textarea>
+                        <div class="row" style="background-color: #eaeaea; padding-bottom: 0.5rem;">
+                            <div class="col-lg-10">
+                                <textarea class="form-control" rows="2" id="message" style="border-radius: 1rem;" 
+                                        placeholder="Type your message"></textarea>
+                            </div>
+                            <div class="col-lg-2">
+                                <button id="send-button" type="submit" class="btn btn-primary" style="border-radius: 1000px;">Send</button>
+                            </div>    
                         </div>
-                        <button id="send-button" type="submit" class="btn btn-primary">Send</button>
                     </form>
-                    
                 </div>
             </div>
         </div>
-        
     </body>
 </html>

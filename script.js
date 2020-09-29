@@ -25,10 +25,23 @@ messageForm.addEventListener('submit', e => {
     messageInput.value = '';
 });
 
-function appendMessage(message) {
+function appendMessage(message, sender) {
     const messageElement = document.createElement('div');
-    messageElement.innerText = message;
-    messageContainer.append(messageElement);
+    if (sender = "me") {
+        messageElement.style = 'float: right;'
+        messageElement.innerHTML = `<p style="background-color: #cbf0c7; padding: .35rem; border-radius: 0.3rem; margin: 1rem 2rem 0rem 2rem;">${message}</p>`;
+        messageContainer.append(messageElement);
+    }
+
+    else if (sender = "other"){
+        messageElement.style = 'float: left;'
+        messageElement.innerHTML = `<p style="background-color: #eaeaea; padding: .35rem; border-radius: 0.3rem; margin: 1rem 2rem 0rem 2rem;">${message}</p>`;
+        messageContainer.append(messageElement);
+    }
+    
+    const cleaner = document.createElement('div');
+    cleaner.style = "clear: both; float: left; display: block; position: relative;"
+    messageContainer.append(cleaner);
 }
 
 
