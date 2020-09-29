@@ -37,15 +37,24 @@ messageForm.addEventListener('submit', e => {
 
 function appendMessage(message, sender) {
     const messageElement = document.createElement('div');
+    var formattedMessage = '';
+    for(var i=0; i<message.length; i++){
+        if(i%50 == 0 && i != 0) {
+            formattedMessage += '<br>' + message[i];
+        }
+        else {
+            formattedMessage += message[i];
+        }
+    }
     if (sender == "me") {
         messageElement.style = 'float: right;'
-        messageElement.innerHTML = `<p style="background-color: #cbf0c7; padding: .35rem 0.75rem; border-radius: 0.3rem; margin: 1rem 2rem 0rem 2rem;">${message}</p>`;
+        messageElement.innerHTML = `<p style="background-color: #dcf8c6; padding: .35rem 0.75rem; border-radius: 0.3rem; margin: 0.5rem 2rem 0rem 2rem;">${formattedMessage}</p>`;
         messageContainer.append(messageElement);
     }
 
     else if (sender == "other"){
         messageElement.style = 'float: left;'
-        messageElement.innerHTML = `<p style="background-color: #eaeaea; padding: .35rem 0.75rem; border-radius: 0.3rem; margin: 1rem 2rem 0rem 2rem;">${message}</p>`;
+        messageElement.innerHTML = `<p style="background-color: #fafafa; padding: .35rem 0.75rem; border-radius: 0.3rem; margin: 0.5rem 2rem 0rem 2rem;">${formattedMessage}</p>`;
         messageContainer.append(messageElement);
     }
     

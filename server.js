@@ -55,15 +55,15 @@ io.on('connect', socket => {
         if (destination != '') {
 
             // If there is not defined a external socket yet.
-            if (c == undefined) {   
-                c = net.createConnection(2022, destination);
+            if (c == undefined) {
+                c = net.createConnection(2020, destination);
                 c.on('connect', () => {
                     console.log("Connection established")
                 });
-            } 
+            }
             else {
                 c.destroy();
-                c = net.createConnection(2022, destination);
+                c = net.createConnection(2020, destination);
                 c.on('connect', () => {
                     console.log("Connection established")
                 });
@@ -71,12 +71,12 @@ io.on('connect', socket => {
         }
 
         // If destination was not specified
-        else {
-            if(c) {
-                c.destroy();
-            }
-            c = undefined;
-        }
+        // else {
+        //     if(c) {
+        //         c.destroy();
+        //     }
+        //     c = undefined;
+        // }
     });
 
     // Client dies.
@@ -90,7 +90,18 @@ io.on('connect', socket => {
 
 // Create a "new" server to be listening at port 2020.
 const server = net.createServer((socket) => {
-    console.log("Client connected");
+
+    console.log(socket.remoteAddress)
+    socket.on('connect', () => {
+        console.log("Client connected");
+        // if (c == undefined) {
+        //     console.log(socket.address());
+        //     c = net.createConnection(2020, socket.address().address.slice(7));
+        //     c.on('connect', () => {
+        //         console.log("Connection established")
+        //     });
+        // }
+    });
 
     // Connection with a client dies.
     socket.on('end', () => {
