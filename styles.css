@@ -1,0 +1,48 @@
+body {
+    background-color: #fafafa;
+}
+
+.main-screen {
+    margin: 1rem 0rem;
+}
+
+.left-panel {
+    background-color: #fff; 
+    border-right: solid 1px #cccccc;
+}
+
+.header-element {
+    background-color: #eaeaea;
+}
+
+.image-container {
+    margin: 0.5rem; 
+    text-align: center;
+}
+
+.circular-img {
+    border-radius: 10rem;
+    width: 120%;
+}
+
+.myprofile-icon {
+    margin-top: 0.8rem;
+    margin-left: 1.2rem;
+}
+
+.myprofile-icon i {
+    color: gray; text-align: center;
+}
+
+.search-container {
+    padding: 0.5rem;
+}
+
+.search-icon {
+    background-color: white; 
+    border-radius: 0.5rem 0rem 0rem 0.5rem;
+}
+
+.search-input {
+    border-radius: 0rem 0.5rem 0.5rem 0rem;
+}

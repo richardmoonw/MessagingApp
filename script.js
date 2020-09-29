@@ -1,41 +1,51 @@
-const socket = io('http://192.168.1.99:3000');
+const socket = io('http://172.16.112.128:3000');
 const messageForm = document.getElementById('message-form');
+const destinationForm = document.getElementById('destination-form');
 const destinationInput = document.getElementById('destination');
 const messageInput = document.getElementById('message');
 const messageContainer = document.getElementById('message-container');
 import ASCPMessage from './message_template.js'
 
-socket.on('external_message', message => {
-    appendMessage(message)
+socket.on('external_message', packet => {
+    var msg_size = packet[9];
+    var message = Utf8ArrayToStr(packet, msg_size);
+    appendMessage(message, "other");
+});
+
+destinationForm.addEventListener('submit', e => {
+    // Avoid page reloading when submitting a form.
+    e.preventDefault();
+
+    const destination = destinationInput.value;
+    socket.emit('set-destination', destination);
 });
 
 messageForm.addEventListener('submit', e => {
     // Avoid page reloading when submitting a form.
     e.preventDefault();
     const message = messageInput.value;
-    const destination = destinationInput.value;
-
+    
     // Create an instance of ASCPMessage and set its data. 
     const message_template = new ASCPMessage();
     message_template.setDatos(message);
 
     // Append the message to the message container and send it to the server socket.
-    appendMessage(message);
-    socket.emit('send-chat-message', message_template.getDatos(), destination);
+    appendMessage(message, "me");
+    socket.emit('send-chat-message', message_template.getDatos());
     messageInput.value = '';
 });
 
 function appendMessage(message, sender) {
     const messageElement = document.createElement('div');
-    if (sender = "me") {
+    if (sender == "me") {
         messageElement.style = 'float: right;'
-        messageElement.innerHTML = `<p style="background-color: #cbf0c7; padding: .35rem; border-radius: 0.3rem; margin: 1rem 2rem 0rem 2rem;">${message}</p>`;
+        messageElement.innerHTML = `<p style="background-color: #cbf0c7; padding: .35rem 0.75rem; border-radius: 0.3rem; margin: 1rem 2rem 0rem 2rem;">${message}</p>`;
         messageContainer.append(messageElement);
     }
 
-    else if (sender = "other"){
+    else if (sender == "other"){
         messageElement.style = 'float: left;'
-        messageElement.innerHTML = `<p style="background-color: #eaeaea; padding: .35rem; border-radius: 0.3rem; margin: 1rem 2rem 0rem 2rem;">${message}</p>`;
+        messageElement.innerHTML = `<p style="background-color: #eaeaea; padding: .35rem 0.75rem; border-radius: 0.3rem; margin: 1rem 2rem 0rem 2rem;">${message}</p>`;
         messageContainer.append(messageElement);
     }
     
@@ -44,4 +54,11 @@ function appendMessage(message, sender) {
     messageContainer.append(cleaner);
 }
 
+function Utf8ArrayToStr(array, len) {
+    var str = '';
+    for(var i=20; i<20 + len; i++){
+        str += String.fromCharCode(array[i]);
+    }
+    return str;
+}
 
