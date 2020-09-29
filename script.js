@@ -1,4 +1,4 @@
-const socket = io('http://172.16.112.128:3000');
+const socket = io('http://192.168.1.99:3000');
 const messageForm = document.getElementById('message-form');
 const destinationForm = document.getElementById('destination-form');
 const destinationInput = document.getElementById('destination');

@@ -50,33 +50,32 @@ io.on('connect', socket => {
 
     // If the client has defined an external destination.
     socket.on('set-destination', destination => {
-
+        console.log("Esto no debe estar pasando")
+        
         // If destination is not empty, create a new socket pointing to it.
         if (destination != '') {
 
             // If there is not defined a external socket yet.
-            if (c == undefined) {
-                c = net.createConnection(2020, destination);
-                c.on('connect', () => {
-                    console.log("Connection established")
-                });
-            }
-            else {
+            if (c != undefined) {
                 c.destroy();
-                c = net.createConnection(2020, destination);
-                c.on('connect', () => {
-                    console.log("Connection established")
-                });
             }
+
+            c = net.createConnection(2020, destination);
+            c.on('connect', () => {
+                console.log("Connection established")
+            });
+            c.on('data', (data) => {
+                socket.emit('send-chat-message', data)
+            })
         }
 
         // If destination was not specified
-        // else {
-        //     if(c) {
-        //         c.destroy();
-        //     }
-        //     c = undefined;
-        // }
+        else {
+            if(c) {
+                c.destroy();
+            }
+            c = undefined;
+        }
     });
 
     // Client dies.
@@ -89,19 +88,11 @@ io.on('connect', socket => {
 });
 
 // Create a "new" server to be listening at port 2020.
-const server = net.createServer((socket) => {
+const server = new net.Server((socket) => {
+    console.log("External client connected");
 
-    console.log(socket.remoteAddress)
-    socket.on('connect', () => {
-        console.log("Client connected");
-        // if (c == undefined) {
-        //     console.log(socket.address());
-        //     c = net.createConnection(2020, socket.address().address.slice(7));
-        //     c.on('connect', () => {
-        //         console.log("Connection established")
-        //     });
-        // }
-    });
+    // Make the new socket an external variable.
+    c = socket
 
     // Connection with a client dies.
     socket.on('end', () => {
