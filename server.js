@@ -50,8 +50,7 @@ io.on('connect', socket => {
 
     // If the client has defined an external destination.
     socket.on('set-destination', destination => {
-        console.log("Esto no debe estar pasando")
-        
+
         // If destination is not empty, create a new socket pointing to it.
         if (destination != '') {
 
@@ -65,7 +64,8 @@ io.on('connect', socket => {
                 console.log("Connection established")
             });
             c.on('data', (data) => {
-                socket.emit('send-chat-message', data)
+                var packet = new Uint8Array(data.buffer);
+                socket.emit('external_message', packet)
             })
         }
 
@@ -101,7 +101,7 @@ const server = new net.Server((socket) => {
 
     // Receive data from other servers and send it to the client.
     socket.on('data', (data) => {
-        packet = new Uint8Array(data.buffer);
+        var packet = new Uint8Array(data.buffer);
         io.emit('external_message', packet);
     })
 });
