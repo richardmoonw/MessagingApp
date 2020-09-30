@@ -3,30 +3,84 @@
     <head>
         <title>Messaging App</title>
         <link rel="stylesheet" href="bootstrap.css">
+        <link rel="stylesheet" href="styles.css">
         <script defer src='http://192.168.1.99:3000/socket.io/socket.io.js'></script>
         <script defer type="module" src='message_template.js'></script>
         <script defer type="module" src='script.js'></script>
-        
+        <script src="https://kit.fontawesome.com/0ea208dbc6.js" crossorigin="anonymous"></script>
     </head>
-    <body>
+    <body class="body-background">
         <div class="container">
-            <h1>Messaging App</h1>
-            <form id="message-form">
-                <div class="form-group">
-                    <label for="destination">Destination:</label>
-                    <input type="text" class="form-control" id="destination">
+            <div class="row main-screen">
+                <!-- Left Panel -->
+                <div class="col-lg-4 left-panel">
+                    <div class="row header-element">
+                        <div class="col-lg-2 image-container">
+                            <img class="circular-img" src="https://diariolalibertad.com/sitio/wp-content/uploads/2020/09/Cristiano-Ronaldo.jpg">
+                        </div>
+                        <div class="col-lg-4"></div>
+                        <div class="col-lg-1 myprofile-icon">
+                            <i class="fa fa-circle-o-notch fa-lg" aria-hidden="true"></i>
+                        </div>
+                        <div class="col-lg-1 myprofile-icon">
+                            <i class="fa fa-envelope fa-lg" aria-hidden="true"></i>
+                        </div>
+                        <div class="col-lg-1 myprofile-icon">
+                            <i class="fa fa-ellipsis-v fa-lg" aria-hidden="true"></i>
+                        </div>
+                    </div>
+
+                    <div class="row header-element">
+                        <div class="input-group search-container">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text search-icon   ">
+                                    <i class="fas fa-search"></i>
+                                </span>
+                            </div>
+                            <input type="text" class="form-control search-input" placeholder="Search or start new chat">
+                        </div>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="message">Message:</label>
-                    <textarea class="form-control" rows="3" id="message"></textarea>
+
+                <!-- Right Panel -->
+                <div class="col-lg-8">
+                    <div class="row header-element">
+                        <div class="col-lg-1 image-container">
+                            <img class="circular-img" src="https://vignette.wikia.nocookie.net/disney/images/5/56/Profile_-_Rex.jpeg/revision/latest/window-crop/width/200/x-offset/14/y-offset/0/window-width/1032/window-height/1031?cb=20190313050619">
+                        </div>
+                        <div class="col-lg-3 chat-name-container">
+                            <p class="chat-name">General</p>
+                        </div>
+                    </div>
+
+                    <!-- Message Container -->
+                    <div class="row chat-container">
+                        <div style="width: 100%;" id="message-container"></div>
+                    </div>
+                    
+                    <form id="destination-form">
+                        <div class="row message-element">
+                            <div class="col-lg-6">
+                                <input type="text" class="form-control destination-input" id="destination" placeholder="Type the destination">
+                            </div>
+                            <div class="col-lg-2">
+                                <button id="set-destination" type="submit" class="btn btn-primary" style="border-radius: 1000px;">Set</button>
+                            </div>   
+                        </div>
+                    </form>
+                    <form id="message-form">
+                        <div class="row message-element">
+                            <div class="col-lg-10">
+                                <textarea class="form-control message-input" rows="2" id="message" placeholder="Type your message" 
+                                            maxlength="236"></textarea>
+                            </div>
+                            <div class="col-lg-2">
+                                <button id="send-button" type="submit" class="btn btn-primary" style="border-radius: 1000px;">Send</button>
+                            </div>    
+                        </div>
+                    </form>
                 </div>
-                <button id="send-button" type="submit" class="btn btn-primary">Send</button>
-            </form>
-            <div id="message-container">
-                <h2>Messages</h2>
-                
             </div>
         </div>
-        
     </body>
 </html>

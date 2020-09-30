@@ -3,6 +3,9 @@ const express = require('express');
 const net = require('net');
 const app = express();
 
+// Variable used to define an external socket.
+var c = undefined;
+
 // Routing function to provide the index page.
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/index.html');
@@ -23,37 +26,85 @@ app.get('/bootstrap.css', (req, res) => {
     res.sendFile(__dirname + '/bootstrap.css');
 });
 
+// Routing function to provide the styles.css file to the index page.
+app.get('/styles.css', (req, res) => {
+    res.sendFile(__dirname + '/styles.css');
+})
+
 // Socket.io function used to detect if a new client is connected to the given socket.
 io.on('connect', socket => {
     console.log('Own client connected');
 
     // Function used to start listening for socket events with the specified event name. 
-    socket.on('send-chat-message', (message, destination) => {
+    socket.on('send-chat-message', (message) => {
         var bufferedMessage = Buffer.from(message, 'ascii');
 
         // Emit a message to all the clients connected to the socket.
         socket.broadcast.emit('external_message', message);
 
-        // If it is an external destination (not this server), create a new socket and send the message.
+        // If there is an external socket defined, then send the message to it.
+        if (c) {
+            c.write(bufferedMessage);
+        }
+    });
+
+    // If the client has defined an external destination.
+    socket.on('set-destination', destination => {
+
+        // If destination is not empty, create a new socket pointing to it.
         if (destination != '') {
-            var c = net.createConnection(2022, destination);
-            c.on("connect", () => {
-                c.write(bufferedMessage);
+
+            // If there is not defined a external socket yet.
+            if (c != undefined) {
                 c.destroy();
+            }
+
+            c = net.createConnection(2020, destination);
+            c.on('connect', () => {
+                console.log("Connection established")
             });
+            c.on('data', (data) => {
+                var packet = new Uint8Array(data.buffer);
+                socket.emit('external_message', packet)
+            })
+        }
+
+        // If destination was not specified
+        else {
+            if(c) {
+                c.destroy();
+            }
+            c = undefined;
+        }
+    });
+
+    // Client dies.
+    socket.on('disconnect', () => {
+        if (c) {
+            console.log("Connection killed")
+            c.destroy();
+            c = undefined;
         }
     });
 });
 
-const server = net.createServer((socket) => {
-    console.log("Client connected");
+// Create a "new" server to be listening at port 2020.
+const server = new net.Server((socket) => {
+    console.log("External client connected");
 
+    // Make the new socket an external variable.
+    c = socket
+
+    // Connection with a client dies.
     socket.on('end', () => {
+        socket.destroy();
         console.log("Client disconnected");
     });
 
+    // Receive data from other servers and send it to the client.
     socket.on('data', (data) => {
-        io.emit('external_message', data.toString());
+        var packet = new Uint8Array(data.buffer);
+        io.emit('external_message', packet);
     })
 });
 
@@ -62,6 +113,4 @@ server.listen(2020, () => {
 });
 
 // Function used to initialize a server and start listening at a given port.
-app.listen(8080, () => {
-    
-});
+app.listen(8080);
