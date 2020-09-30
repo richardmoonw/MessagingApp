@@ -81,6 +81,7 @@ io.on('connect', socket => {
     // Client dies.
     socket.on('disconnect', () => {
         if (c) {
+            console.log("Connection killed")
             c.destroy();
             c = undefined;
         }
@@ -96,6 +97,7 @@ const server = new net.Server((socket) => {
 
     // Connection with a client dies.
     socket.on('end', () => {
+        socket.destroy();
         console.log("Client disconnected");
     });
 
