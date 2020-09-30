@@ -55,19 +55,18 @@ io.on('connect', socket => {
         if (destination != '') {
 
             // If there is not defined a external socket yet.
-            if (c == undefined) {   
-                c = net.createConnection(2022, destination);
-                c.on('connect', () => {
-                    console.log("Connection established")
-                });
-            } 
-            else {
+            if (c != undefined) {
                 c.destroy();
-                c = net.createConnection(2022, destination);
-                c.on('connect', () => {
-                    console.log("Connection established")
-                });
             }
+
+            c = net.createConnection(2020, destination);
+            c.on('connect', () => {
+                console.log("Connection established")
+            });
+            c.on('data', (data) => {
+                var packet = new Uint8Array(data.buffer);
+                socket.emit('external_message', packet)
+            })
         }
 
         // If destination was not specified
@@ -82,6 +81,7 @@ io.on('connect', socket => {
     // Client dies.
     socket.on('disconnect', () => {
         if (c) {
+            console.log("Connection killed")
             c.destroy();
             c = undefined;
         }
@@ -89,17 +89,21 @@ io.on('connect', socket => {
 });
 
 // Create a "new" server to be listening at port 2020.
-const server = net.createServer((socket) => {
-    console.log("Client connected");
+const server = new net.Server((socket) => {
+    console.log("External client connected");
+
+    // Make the new socket an external variable.
+    c = socket
 
     // Connection with a client dies.
     socket.on('end', () => {
+        socket.destroy();
         console.log("Client disconnected");
     });
 
     // Receive data from other servers and send it to the client.
     socket.on('data', (data) => {
-        packet = new Uint8Array(data.buffer);
+        var packet = new Uint8Array(data.buffer);
         io.emit('external_message', packet);
     })
 });

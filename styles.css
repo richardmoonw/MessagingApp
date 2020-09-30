@@ -3,7 +3,7 @@ body {
 }
 
 .main-screen {
-    margin: 1rem 0rem;
+    margin: 1vh 0rem;
 }
 
 .left-panel {
@@ -45,4 +45,31 @@ body {
 
 .search-input {
     border-radius: 0rem 0.5rem 0.5rem 0rem;
+}
+
+.chat-name-container {
+    margin-top: 0.5rem; 
+    padding-left: 0;
+}
+
+.chat-name {
+    font-size: 1.05rem;
+}
+
+.chat-container {
+    height: 79vh; 
+    background-image: url('https://res.cloudinary.com/practicaldev/image/fetch/s--WAKqnINn--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://thepracticaldev.s3.amazonaws.com/i/tw0nawnvo0zpgm5nx4fp.png');
+}
+
+.message-element {
+    background-color: #eaeaea; 
+    padding: 0.5rem 0rem;
+}
+
+.destination-input {
+    border-radius: 10rem;
+}
+
+.message-input {
+    border-radius: 1rem;
 }

@@ -4,7 +4,7 @@
         <title>Messaging App</title>
         <link rel="stylesheet" href="bootstrap.css">
         <link rel="stylesheet" href="styles.css">
-        <script defer src='http://172.16.112.128:3000/socket.io/socket.io.js'></script>
+        <script defer src='http://192.168.1.99:3000/socket.io/socket.io.js'></script>
         <script defer type="module" src='message_template.js'></script>
         <script defer type="module" src='script.js'></script>
         <script src="https://kit.fontawesome.com/0ea208dbc6.js" crossorigin="anonymous"></script>
@@ -48,21 +48,20 @@
                         <div class="col-lg-1 image-container">
                             <img class="circular-img" src="https://vignette.wikia.nocookie.net/disney/images/5/56/Profile_-_Rex.jpeg/revision/latest/window-crop/width/200/x-offset/14/y-offset/0/window-width/1032/window-height/1031?cb=20190313050619">
                         </div>
-                        <div style="margin-top: 0.5rem; padding-left: 0;" class="col-lg-3">
-                            <p style="font-size: 1.05rem;">General</p>
+                        <div class="col-lg-3 chat-name-container">
+                            <p class="chat-name">General</p>
                         </div>
                     </div>
 
                     <!-- Message Container -->
-                    <div class="row" style="height: 42vw; background-image: url('https://res.cloudinary.com/practicaldev/image/fetch/s--WAKqnINn--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://thepracticaldev.s3.amazonaws.com/i/tw0nawnvo0zpgm5nx4fp.png');">
+                    <div class="row chat-container">
                         <div style="width: 100%;" id="message-container"></div>
                     </div>
                     
                     <form id="destination-form">
-                        <div class="row" style="background-color: #eaeaea; padding: 0.5rem 0rem;">
+                        <div class="row message-element">
                             <div class="col-lg-6">
-                                <input type="text" class="form-control" id="destination" style="border-radius: 10rem;"
-                                        placeholder="Type the destination">
+                                <input type="text" class="form-control destination-input" id="destination" placeholder="Type the destination">
                             </div>
                             <div class="col-lg-2">
                                 <button id="set-destination" type="submit" class="btn btn-primary" style="border-radius: 1000px;">Set</button>
@@ -70,10 +69,10 @@
                         </div>
                     </form>
                     <form id="message-form">
-                        <div class="row" style="background-color: #eaeaea; padding-bottom: 0.5rem;">
+                        <div class="row message-element">
                             <div class="col-lg-10">
-                                <textarea class="form-control" rows="2" id="message" style="border-radius: 1rem;" 
-                                        placeholder="Type your message" maxlength="236"></textarea>
+                                <textarea class="form-control message-input" rows="2" id="message" placeholder="Type your message" 
+                                            maxlength="236"></textarea>
                             </div>
                             <div class="col-lg-2">
                                 <button id="send-button" type="submit" class="btn btn-primary" style="border-radius: 1000px;">Send</button>
