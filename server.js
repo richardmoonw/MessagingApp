@@ -37,7 +37,7 @@ io.on('connect', socket => {
 
     // Function used to start listening for socket events with the specified event name. 
     socket.on('send-chat-message', (message) => {
-        var bufferedMessage = Buffer.from(message, 'ascii');
+        var bufferedMessage = Buffer.from(message);
 
         // Emit a message to all the clients connected to the socket.
         socket.broadcast.emit('external_message', message);
