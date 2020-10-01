@@ -1,14 +1,18 @@
 const socket = io('http://192.168.1.99:3000');
 const messageForm = document.getElementById('message-form');
 const destinationForm = document.getElementById('destination-form');
+const keyForm = document.getElementById('key-form');
 const destinationInput = document.getElementById('destination');
 const messageInput = document.getElementById('message');
+const keyInput = document.getElementById('key');
 const messageContainer = document.getElementById('message-container');
 import ASCPMessage from './message_template.js'
 
+var key = undefined;
+
 socket.on('external_message', packet => {
 
-    var key = CryptoJS.enc.Hex.parse("1234567890abcd");
+    var decryption_key = CryptoJS.enc.Hex.parse(key);
 
     // Convert the array received to Uint8Array (required to perform the following
     // actions).
@@ -25,7 +29,7 @@ socket.on('external_message', packet => {
     }
 
     // Perform the encryption with the proper message object and key.
-    var decrypted = CryptoJS.DES.decrypt(ciphertext, key, {
+    var decrypted = CryptoJS.DES.decrypt(ciphertext, decryption_key, {
         mode: CryptoJS.mode.ECB,
         padding: CryptoJS.pad.ZeroPadding
     });
@@ -47,6 +51,13 @@ destinationForm.addEventListener('submit', e => {
     socket.emit('set-destination', destination);
 });
 
+keyForm.addEventListener('submit', e => {
+    // Avoid page reloading when submitting a form.
+    e.preventDefault();
+
+    key = keyInput.value;
+})
+
 messageForm.addEventListener('submit', e => {
     // Avoid page reloading when submitting a form.
     e.preventDefault();
@@ -59,14 +70,14 @@ messageForm.addEventListener('submit', e => {
     // Declare the key to be used for encryption (Hexadecimal format).
     // If we do not do this, the key will be used only as a passphrase to generate
     // the real key and IV.
-    var key = CryptoJS.enc.Hex.parse("1234567890abcd");
+    var encryption_key = CryptoJS.enc.Hex.parse(key);
 
     // Convert the message to WordArray. CryptoJS encrpt method can only receive as
     // message parameter a String or a WordArray.
     var message_wordArray = convertUint8ArrayToWordArray(message_template.getDatos());
 
     // Encrypt the message's WordArray with the given key (ECB mode and no padding).
-    var encrypted = CryptoJS.DES.encrypt(message_wordArray, key, {
+    var encrypted = CryptoJS.DES.encrypt(message_wordArray, encryption_key, {
         mode: CryptoJS.mode.ECB,
         padding: CryptoJS.pad.ZeroPadding
     });
