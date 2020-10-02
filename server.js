@@ -64,7 +64,7 @@ io.on('connect', socket => {
                 console.log("Connection established")
             });
             c.on('data', (data) => {
-                var packet = new Uint8Array(data.buffer);
+                var packet = Array.prototype.slice.call(data, 0);
                 socket.emit('external_message', packet)
             })
         }
@@ -96,14 +96,14 @@ const server = new net.Server((socket) => {
     c = socket
 
     // Connection with a client dies.
-    socket.on('end', () => {
+    socket.on('close', () => {
         socket.destroy();
         console.log("Client disconnected");
     });
 
     // Receive data from other servers and send it to the client.
     socket.on('data', (data) => {
-        var packet = new Uint8Array(data.buffer);
+        var packet = Array.prototype.slice.call(data, 0);
         io.emit('external_message', packet);
     })
 });
