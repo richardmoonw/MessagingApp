@@ -6,13 +6,15 @@ const destinationInput = document.getElementById('destination');
 const messageInput = document.getElementById('message');
 const keyInput = document.getElementById('key');
 const messageContainer = document.getElementById('message-container');
+const chatName = document.getElementById('chat-name-1');
+const chatName2 = document.getElementById('chat-name-2');
+const keyValue = document.getElementById('key-value');
 import ASCPMessage from './message_template.js';
 
 var key = undefined;
 
 socket.on('external_message', packet => {
 
-    console.log(packet);
     if(key != undefined) {
         var decryption_key = CryptoJS.enc.Hex.parse(key);
 
@@ -32,8 +34,7 @@ socket.on('external_message', packet => {
 
         // Perform the encryption with the proper message object and key.
         var decrypted = CryptoJS.DES.decrypt(ciphertext, decryption_key, {
-            mode: CryptoJS.mode.ECB,
-            padding: CryptoJS.pad.ZeroPadding
+            mode: CryptoJS.mode.ECB
         });
 
         // Convert the decrypted message to a Uint8Array.
@@ -51,6 +52,14 @@ destinationForm.addEventListener('submit', e => {
     e.preventDefault();
 
     const destination = destinationInput.value;
+    if (destination == ''){
+        chatName.innerHTML = 'General';
+        chatName2.innerHTML = 'General';
+    }
+    else {
+        chatName.innerHTML = destination;
+        chatName2.innerHTML = destination;
+    }
     socket.emit('set-destination', destination);
 });
 
@@ -60,9 +69,11 @@ keyForm.addEventListener('submit', e => {
 
     if(keyInput.value == '') {
         key = undefined;
+        keyValue.innerHTML = "No key";
     }
     else {
         key = keyInput.value;
+        keyValue.innerHTML = key;
     }   
 })
 
@@ -76,7 +87,6 @@ messageForm.addEventListener('submit', e => {
     message_template.setDatos(message);
 
     var new_msj = [];
-    console.log(message)
 
     if(key != undefined){
         // Declare the key to be used for encryption (Hexadecimal format).
@@ -90,8 +100,7 @@ messageForm.addEventListener('submit', e => {
 
         // Encrypt the message's WordArray with the given key (ECB mode and no padding).
         var encrypted = CryptoJS.DES.encrypt(message_wordArray, encryption_key, {
-            mode: CryptoJS.mode.ECB,
-            padding: CryptoJS.pad.ZeroPadding
+            mode: CryptoJS.mode.ECB
         });
 
         // Encrypt the message, convert the resulting WordArray to an Uint8Array and then
@@ -108,6 +117,8 @@ messageForm.addEventListener('submit', e => {
     socket.emit('send-chat-message', new_msj);
     messageInput.value = '';
 });
+
+
 
 function appendMessage(message, sender) {
     const messageElement = document.createElement('div');

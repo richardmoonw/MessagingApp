@@ -30,17 +30,35 @@
                             <i class="fa fa-ellipsis-v fa-lg" aria-hidden="true"></i>
                         </div>
                     </div>
-
-                    <div class="row header-element">
-                        <div class="input-group search-container">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text search-icon   ">
-                                    <i class="fas fa-search"></i>
-                                </span>
+                    
+                    <form id="destination-form">
+                        <div class="row header-element" style="border-bottom: 1px lightgray solid">
+                            <div class="input-group search-container">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text search-icon">
+                                        <button id="set-destination" class="fas fa-search" style="border: none; background: none;" type="submit"></button>
+                                    </span>
+                                </div>
+                                <input type="text" class="form-control destination-input" id="destination" placeholder="Type the destination">
                             </div>
-                            <input type="text" class="form-control search-input" placeholder="Search or start new chat">
+                        </div>
+                    </form>
+
+                    <div class="row">
+                        <div class="col-lg-2 image-container">
+                            <img style="width: 150%; border-radius: 10rem;" src="https://vignette.wikia.nocookie.net/disney/images/5/56/Profile_-_Rex.jpeg/revision/latest/window-crop/width/200/x-offset/14/y-offset/0/window-width/1032/window-height/1031?cb=20190313050619">
+                        </div>
+                        <div class="col-lg-9" style="border-bottom: 1px lightgray solid">
+                            <div class="row" style="padding: 0.6rem 0rem 0rem 1rem;">
+                                <p id="chat-name-1" style="margin:0" class="chat-name">General</p>
+                            </div>
+                            <div class="row" style="padding: 0rem 0rem 0rem 1rem;">
+                                <p id="key-value" style="margin:0; font-size: 0.8rem; color: darkgray;">No key</p>
+                            </div>
+                            
                         </div>
                     </div>
+             
                 </div>
 
                 <!-- Right Panel -->
@@ -50,7 +68,7 @@
                             <img class="circular-img" src="https://vignette.wikia.nocookie.net/disney/images/5/56/Profile_-_Rex.jpeg/revision/latest/window-crop/width/200/x-offset/14/y-offset/0/window-width/1032/window-height/1031?cb=20190313050619">
                         </div>
                         <div class="col-lg-3 chat-name-container">
-                            <p class="chat-name">General</p>
+                            <p id="chat-name-2" class="chat-name">General</p>
                         </div>
                     </div>
 
@@ -59,21 +77,11 @@
                         <div style="width: 100%;" id="message-container"></div>
                     </div>
                     
-                    <form id="destination-form">
-                        <div class="row message-element">
-                            <div class="col-lg-6">
-                                <input type="text" class="form-control destination-input" id="destination" placeholder="Type the destination">
-                            </div>
-                            <div class="col-lg-2">
-                                <button id="set-destination" type="submit" class="btn btn-primary" style="border-radius: 1000px;">Set</button>
-                            </div>   
-                        </div>
-                    </form>
                     <form id="key-form">
                         <div class="row message-element">
                             <div class="col-lg-6">
                                 <input type="text" class="form-control destination-input" id="key" placeholder="Type the Key"
-                                        maxlength="14">
+                                        maxlength="16">
                             </div>
                             <div class="col-lg-2">
                                 <button id="set-key" type="submit" class="btn btn-primary" style="border-radius: 1000px;">Set</button>
