@@ -9,7 +9,7 @@ class ASCPMessage {
         this.OFFSET_ID_SESION = 16
         this.OFFSET_DATOS     = 20
         this.MSG_SIZE         = 256
-        this.message = new Uint8Array(256).fill(0);
+        this.message = new Array(256).fill(0);
         this.message[this.OFFSET_SIGNATURE] = 65;       // A
         this.message[this.OFFSET_SIGNATURE + 1] = 83;   // S
         this.message[this.OFFSET_SIGNATURE + 2] = 67;   // C

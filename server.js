@@ -37,7 +37,7 @@ io.on('connect', socket => {
 
     // Function used to start listening for socket events with the specified event name. 
     socket.on('send-chat-message', (message) => {
-        var bufferedMessage = Buffer.from(message);
+        var bufferedMessage = Buffer.from(message, 'ascii');
 
         // Emit a message to all the clients connected to the socket.
         socket.broadcast.emit('external_message', message);
@@ -64,22 +64,14 @@ io.on('connect', socket => {
                 console.log("Connection established")
             });
             c.on('data', (data) => {
-                var packet = Array.prototype.slice.call(data, 0);
+                var packet = new Uint8Array(data.buffer);
                 socket.emit('external_message', packet)
-            });
-            c.on('close', () => {
-                if(c) {
-                    console.log("External client disconnected");
-                    c.destroy();
-                }
-                c = undefined;
             })
         }
 
         // If destination was not specified
         else {
             if(c) {
-                console.log("Killed connection to external server");
                 c.destroy();
             }
             c = undefined;
@@ -104,16 +96,14 @@ const server = new net.Server((socket) => {
     c = socket
 
     // Connection with a client dies.
-    socket.on('close', () => {
-        c.destroy();
-        c = undefined;
+    socket.on('end', () => {
         socket.destroy();
         console.log("Client disconnected");
     });
 
     // Receive data from other servers and send it to the client.
     socket.on('data', (data) => {
-        var packet = Array.prototype.slice.call(data, 0);
+        var packet = new Uint8Array(data.buffer);
         io.emit('external_message', packet);
     })
 });
