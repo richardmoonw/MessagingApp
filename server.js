@@ -88,11 +88,11 @@ io.on('connect', socket => {
 
     // Client dies.
     socket.on('disconnect', () => {
-        if (c) {
-            console.log("Connection killed")
-            c.destroy();
-            c = undefined;
-        }
+        console.log("Internal client died")
+        // if (c) {
+        //     c.destroy();
+        //     c = undefined;
+        // }
     });
 });
 
@@ -105,10 +105,11 @@ const server = new net.Server((socket) => {
 
     // Connection with a client dies.
     socket.on('close', () => {
-        // if(c) {
-        //     c.destroy();
-        //     c = undefined;
-        // }
+        // Comentar en caso de fallas
+        if(c) {
+            c.destroy();
+            c = undefined;
+        }
         socket.destroy();
         console.log("Client disconnected");
     });

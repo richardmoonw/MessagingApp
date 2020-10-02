@@ -43,10 +43,6 @@ body {
     border-radius: 0.5rem 0rem 0rem 0.5rem;
 }
 
-.search-input {
-    border-radius: 0rem 0.5rem 0.5rem 0rem;
-}
-
 .chat-name-container {
     margin-top: 0.5rem; 
     padding-left: 0;
@@ -67,7 +63,7 @@ body {
 }
 
 .destination-input {
-    border-radius: 10rem;
+    border-radius: 0rem 0.5rem 0.5rem 0rem;
 }
 
 .message-input {

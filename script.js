@@ -6,13 +6,15 @@ const destinationInput = document.getElementById('destination');
 const messageInput = document.getElementById('message');
 const keyInput = document.getElementById('key');
 const messageContainer = document.getElementById('message-container');
+const chatName = document.getElementById('chat-name-1');
+const chatName2 = document.getElementById('chat-name-2');
+const keyValue = document.getElementById('key-value');
 import ASCPMessage from './message_template.js';
 
 var key = undefined;
 
 socket.on('external_message', packet => {
 
-    console.log(packet);
     if(key != undefined) {
         var decryption_key = CryptoJS.enc.Hex.parse(key);
 
@@ -50,6 +52,14 @@ destinationForm.addEventListener('submit', e => {
     e.preventDefault();
 
     const destination = destinationInput.value;
+    if (destination == ''){
+        chatName.innerHTML = 'General';
+        chatName2.innerHTML = 'General';
+    }
+    else {
+        chatName.innerHTML = destination;
+        chatName2.innerHTML = destination;
+    }
     socket.emit('set-destination', destination);
 });
 
@@ -59,9 +69,11 @@ keyForm.addEventListener('submit', e => {
 
     if(keyInput.value == '') {
         key = undefined;
+        keyValue.innerHTML = "No key";
     }
     else {
         key = keyInput.value;
+        keyValue.innerHTML = key;
     }   
 })
 
@@ -105,6 +117,8 @@ messageForm.addEventListener('submit', e => {
     socket.emit('send-chat-message', new_msj);
     messageInput.value = '';
 });
+
+
 
 function appendMessage(message, sender) {
     const messageElement = document.createElement('div');
