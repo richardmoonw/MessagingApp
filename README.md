@@ -1,43 +1,35 @@
 # Messaging App
-Requerimientos:
-Construir una aplicación de mensajería instantánea que use el protocolo ASCP.
-Considere lo siguiente:
-1. La aplicación podrá enviar y recibir mensajes usando el protocolo
-ASCP en dos modos: 1) sin encripción, 2) con encripción.
-2. Entonces, el usuario deberá tener la opción de encriptar mensajes
-para privacidad, de ser así, también deberá solicitar una llave. Por
-lo pronto asumimos que si dos usuarios quieren comunicarse de
-manera confidencial ambos poseen la MISMA llave.
-3. La aplicación deberá construir el mensaje y después encriptarlo
-usando DES/ECB (esto significa que los encabezados también
-están encriptados) y después se transmiten usando un socket TCP
-4. Por lo pronto, el protocolo solo implementa un tipo de mensaje,
-sin embargo, considere que eventualmente agregaremos otros
-tipos de mensajes.
-5. Cuando la aplicación recibe un mensaje, el mensaje deberá ser
-desencriptado e interpretado para saber el tipo de mensaje (solo
-uno para esta entrega)
-6. Por lo pronto, el usuario deberá capturar la dirección IP del otro
-usuario.
-7. Cualquier host puede iniciar la comunicación
-8. Las aplicaciones de los diferentes equipos deberán comunicarse
-entre sí.
-9. El puerto TCP a utilizar es 2020.
-10. Deberá tener interfaz de usuario gráfica.
 
-Contenido:
-- Un archivo de Bootstrap.
-- Un archivo de styles de css.
-- La carpeta de los modulos de Node
-- Los JSON del Git y el .gitignore
-- El archivo html de la interfaz gráfica.
-- Un archivo javascript del modelo ASCP message_template.js
-- Un archivo javascript para el servidor.
-- Un archivo javascript para el cliente script.js
-- Este archivo ReadMe.
+## Requirements:
+Build an instant messaging app that uses ASCP (A Simple Communication Protocol).
 
-Es necesario cambiar la linea 1 del archivo script.js y la linea 9 de index.html a tu IP.
-Para correr la aplicación se necesita descargar NodeJS y correr en la carpeta el comando
+### Considerations:
+1. The app should be able to send and receive messages using the ASCP protocol. It should have 2 modes of operation: 1) without encryption and 2) with encryption.
+2. The user should have the option to encrypt messages for better security, in that case, they would type the key. For this version, it is assumed that all the parties will have the same key (it is not necessary to pass the key through a secure chanel yet).
+3. The app have to build the message and encrypt it using DES/ECB (headers must be encrypted too) and then it is transmitted using a TCP socket.
+4. This version only implements one type of message, nevertheless, future versions will have more types.
+5. If the app receives a message, this should be decrypted and interpreted to know the message type.
+6. In this version, the user should enter directly the other parties' IP.
+7. Any host (external apps) can begin the communication.
+8. App should be able to communicate with other apps using the same mechanism.
+9. TCP port must be 2020.
+10. UI is required.
+
+## Content:
+- bootstrap.css: Bootstrap stylesheet.
+- styles.css: Custom stylesheet.
+- package.json: Node's package.json.
+- index.html: Index page.
+- message_template.js: JavaScript file to build the ASCP message.
+- server.js: Server's JavaScript file.
+- client.js: Client's JavaScript file.
+
+## Instructions to run the app.
+1. Clone or download the repository in a given folder.
+2. Navigate to the root directory of the project.
+3. If it is the first time that you run it, type ```npm install``` to install all the dependencies and create the node_modules folder. (If you prefer, you can install all the dependencies listed in the package.json by yourself).
+4. You may need to change some IP directions in the script.js (line 1) and index.html (line 9) files in order to run the app your own server.
+5. Run the application with the following command:
 ```
 npm run start
 ```
