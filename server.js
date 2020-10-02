@@ -105,8 +105,10 @@ const server = new net.Server((socket) => {
 
     // Connection with a client dies.
     socket.on('close', () => {
-        c.destroy();
-        c = undefined;
+        // if(c) {
+        //     c.destroy();
+        //     c = undefined;
+        // }
         socket.destroy();
         console.log("Client disconnected");
     });

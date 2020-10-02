@@ -32,8 +32,7 @@ socket.on('external_message', packet => {
 
         // Perform the encryption with the proper message object and key.
         var decrypted = CryptoJS.DES.decrypt(ciphertext, decryption_key, {
-            mode: CryptoJS.mode.ECB,
-            padding: CryptoJS.pad.ZeroPadding
+            mode: CryptoJS.mode.ECB
         });
 
         // Convert the decrypted message to a Uint8Array.
@@ -76,7 +75,6 @@ messageForm.addEventListener('submit', e => {
     message_template.setDatos(message);
 
     var new_msj = [];
-    console.log(message)
 
     if(key != undefined){
         // Declare the key to be used for encryption (Hexadecimal format).
@@ -90,8 +88,7 @@ messageForm.addEventListener('submit', e => {
 
         // Encrypt the message's WordArray with the given key (ECB mode and no padding).
         var encrypted = CryptoJS.DES.encrypt(message_wordArray, encryption_key, {
-            mode: CryptoJS.mode.ECB,
-            padding: CryptoJS.pad.ZeroPadding
+            mode: CryptoJS.mode.ECB
         });
 
         // Encrypt the message, convert the resulting WordArray to an Uint8Array and then
