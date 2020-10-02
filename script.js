@@ -1,10 +1,8 @@
-const socket = io('http://172.16.112.128:3000');
+const socket = io('http://192.168.1.99:3000');
 const messageForm = document.getElementById('message-form');
 const destinationForm = document.getElementById('destination-form');
-const keyForm = document.getElementById('key-form');
 const destinationInput = document.getElementById('destination');
 const messageInput = document.getElementById('message');
-const keyInput = document.getElementById('key');
 const messageContainer = document.getElementById('message-container');
 const chatName = document.getElementById('chat-name-1');
 const chatName2 = document.getElementById('chat-name-2');
@@ -86,6 +84,7 @@ messageForm.addEventListener('submit', e => {
     const message_template = new ASCPMessage();
     message_template.setDatos(message);
 
+
     var new_msj = [];
 
     if(key != undefined){
@@ -114,7 +113,7 @@ messageForm.addEventListener('submit', e => {
 
     // Append the message to the message container and send it to the server socket.
     appendMessage(message, "me");
-    socket.emit('send-chat-message', new_msj);
+    socket.emit('send-chat-message', message_template.getDatos());
     messageInput.value = '';
 });
 
@@ -148,7 +147,6 @@ function appendMessage(message, sender) {
     messageContainer.append(cleaner);
 }
 
-// Function used to extract only the message from the message template.
 function Utf8ArrayToStr(array, len) {
     var str = '';
     for(var i=20; i<20 + len; i++){
@@ -157,38 +155,3 @@ function Utf8ArrayToStr(array, len) {
     return str;
 }
 
-// Function used to convert a Uint8Array to a WordArray.
-function convertUint8ArrayToWordArray(u8Array) {
-    var words = [], i = 0, len = u8Array.length;
-
-    while(i < len) {
-        words.push(
-            (u8Array[i++] << 24) |
-            (u8Array[i++] << 16) |
-            (u8Array[i++] << 8) |
-            (u8Array[i++])
-        );
-    }
-
-    return {
-        sigBytes: words.length * 4,
-        words: words
-    };
-}
-
-// Function used to convert a WordArray to a Uint8Array.
-function convertWordArrayToUint8Array(wordArray) {
-    var len = wordArray.words.length;
-    var u8_array = new Uint8Array(len << 2);
-    var offset = 0, word, i;
-
-    for(i=0; i<len; i++) {
-        word = wordArray.words[i];
-        u8_array[offset++] = word >> 24;
-        u8_array[offset++] = word >> 16 & 0xff;
-        u8_array[offset++] = word >> 8 & 0xff;
-        u8_array[offset++] = word & 0xff;
-    }
-
-    return u8_array;
-}
