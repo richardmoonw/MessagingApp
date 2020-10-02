@@ -66,12 +66,20 @@ io.on('connect', socket => {
             c.on('data', (data) => {
                 var packet = Array.prototype.slice.call(data, 0);
                 socket.emit('external_message', packet)
+            });
+            c.on('close', () => {
+                if(c) {
+                    console.log("External client disconnected");
+                    c.destroy();
+                }
+                c = undefined;
             })
         }
 
         // If destination was not specified
         else {
             if(c) {
+                console.log("Killed connection to external server");
                 c.destroy();
             }
             c = undefined;
@@ -97,6 +105,8 @@ const server = new net.Server((socket) => {
 
     // Connection with a client dies.
     socket.on('close', () => {
+        c.destroy();
+        c = undefined;
         socket.destroy();
         console.log("Client disconnected");
     });
