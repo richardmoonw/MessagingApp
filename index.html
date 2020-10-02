@@ -2,12 +2,13 @@
 <html>
     <head>
         <title>Messaging App</title>
+        <script src="https://kit.fontawesome.com/0ea208dbc6.js" crossorigin="anonymous"></script>
         <link rel="stylesheet" href="bootstrap.css">
         <link rel="stylesheet" href="styles.css">
-        <script defer src='http://192.168.1.99:3000/socket.io/socket.io.js'></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js"></script>
+        <script defer src='http://172.16.112.128:3000/socket.io/socket.io.js'></script>
         <script defer type="module" src='message_template.js'></script>
         <script defer type="module" src='script.js'></script>
-        <script src="https://kit.fontawesome.com/0ea208dbc6.js" crossorigin="anonymous"></script>
     </head>
     <body class="body-background">
         <div class="container">
@@ -65,6 +66,17 @@
                             </div>
                             <div class="col-lg-2">
                                 <button id="set-destination" type="submit" class="btn btn-primary" style="border-radius: 1000px;">Set</button>
+                            </div>   
+                        </div>
+                    </form>
+                    <form id="key-form">
+                        <div class="row message-element">
+                            <div class="col-lg-6">
+                                <input type="text" class="form-control destination-input" id="key" placeholder="Type the Key"
+                                        maxlength="14">
+                            </div>
+                            <div class="col-lg-2">
+                                <button id="set-key" type="submit" class="btn btn-primary" style="border-radius: 1000px;">Set</button>
                             </div>   
                         </div>
                     </form>
