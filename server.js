@@ -21,6 +21,11 @@ app.get('/message_template.js', (req, res) => {
     res.sendFile(__dirname + '/message_template.js');
 });
 
+// Routing function to provide the index.browser.bundle.mod.js file.
+app.get('/lib/index.browser.bundle.mod.js', (req, res) => {
+    res.sendFile(__dirname + '/lib/index.browser.bundle.mod.js');
+});
+
 // Routing function to provide the bootstrap.css file to the index page.
 app.get('/bootstrap.css', (req, res) => {
     res.sendFile(__dirname + '/bootstrap.css');

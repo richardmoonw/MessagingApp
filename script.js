@@ -1,4 +1,4 @@
-const socket = io('http://172.16.112.128:3000');
+const socket = io('http://192.168.1.99:3000');
 const messageForm = document.getElementById('message-form');
 const destinationForm = document.getElementById('destination-form');
 const keyForm = document.getElementById('key-form');
@@ -10,12 +10,33 @@ const chatName = document.getElementById('chat-name-1');
 const chatName2 = document.getElementById('chat-name-2');
 const keyValue = document.getElementById('key-value');
 import ASCPMessage from './message_template.js';
+import * as bigintCryptoUtils from './lib/index.browser.bundle.mod.js'
 
 var key = undefined;
 
 socket.on('external_message', packet => {
 
-    if(key != undefined) {
+    if(key == undefined) {
+        var functionType = packet[10];
+        let msg_size = packet[9];
+        let message = Utf8ArrayToStr(packet, 20, msg_size);
+        if (functionType == 1) {
+            // Append the received message to the messages.
+            appendMessage(message, "other");
+        }
+        else if (functionType == 2) {
+            let dfHellParameters = message.split(",");
+            let q = parseInt(dfHellParameters[0].slice(2));
+            let alpha = parseInt(dfHellParameters[1].slice(2));
+            let otherY = parseInt(dfHellParameters[2].slice(2));
+
+            let y = calculateY(alpha, q, 233);
+            calculateKey(q, otherY, 233);
+            console.log(y)
+            console.log(key);
+        }
+    }
+    else if(key != undefined) {
         var decryption_key = CryptoJS.enc.Hex.parse(key);
 
         // Convert the array received to Uint8Array (required to perform the following
@@ -39,12 +60,12 @@ socket.on('external_message', packet => {
 
         // Convert the decrypted message to a Uint8Array.
         packet = convertWordArrayToUint8Array(decrypted);
-    }
 
-    // Extract only the message from all the packet and append it to the messages.
-    var msg_size = packet[9];
-    var message = Utf8ArrayToStr(packet, msg_size);
-    appendMessage(message, "other");
+        // Extract only the message from all the packet and append it to the messages.
+        let msg_size = packet[9];
+        let message = Utf8ArrayToStr(packet, 20, msg_size);
+        appendMessage(message, "other");
+    }
 });
 
 destinationForm.addEventListener('submit', e => {
@@ -149,9 +170,9 @@ function appendMessage(message, sender) {
 }
 
 // Function used to extract only the message from the message template.
-function Utf8ArrayToStr(array, len) {
+function Utf8ArrayToStr(array, startAt, len) {
     var str = '';
-    for(var i=20; i<20 + len; i++){
+    for(var i=startAt; i<startAt + len; i++){
         str += String.fromCharCode(array[i]);
     }
     return str;
@@ -191,4 +212,21 @@ function convertWordArrayToUint8Array(wordArray) {
     }
 
     return u8_array;
+}
+
+ // Function used to calculate public Y given alpha, Q, and X.
+ function calculateY(alpha, q, x) {
+
+    // Fast exponentiation
+    var y = bigintCryptoUtils.modPow(alpha, x, q);
+    y = parseInt(y);
+    return y;
+}
+
+// Function used to calculate the key given Q, X and other's Y.
+function calculateKey(q, otherY, x) {
+
+    // Fast exponentiation
+    let internalKey = bigintCryptoUtils.modPow(otherY, x, q);
+    key = parseInt(internalKey);
 }

@@ -36,7 +36,7 @@ class ASCPMessage {
         return this.message
     }
 
-    showDatos(){
+    showDatos() {
         this.message.forEach(element => console.log(element));
     }
 
@@ -49,6 +49,10 @@ class ASCPMessage {
         for(var i = this.OFFSET_DATOS;i < this.OFFSET_DATOS + this.message[OFFSET_TAM_DATOS];i++){
             t = t + this.message[i]
         }
+    }
+
+    setFunction(type) {
+        this.message[this.OFFSET_FUNCION] = type;
     }
 }
 
