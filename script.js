@@ -1,10 +1,8 @@
 const socket = io('http://192.168.1.99:3000');
 const messageForm = document.getElementById('message-form');
 const destinationForm = document.getElementById('destination-form');
-const keyForm = document.getElementById('key-form');
 const destinationInput = document.getElementById('destination');
 const messageInput = document.getElementById('message');
-const keyInput = document.getElementById('key');
 const messageContainer = document.getElementById('message-container');
 const chatName = document.getElementById('chat-name-1');
 const chatName2 = document.getElementById('chat-name-2');
@@ -13,6 +11,12 @@ import ASCPMessage from './message_template.js';
 import * as bigintCryptoUtils from './lib/index.browser.bundle.mod.js'
 
 var key = undefined;
+var x = 233, alpha = 3, q = 353;
+
+socket.on('no_key', () => {
+    key = undefined;
+    keyValue.value = 'No key';
+});
 
 socket.on('external_message', packet => {
 
@@ -24,17 +28,24 @@ socket.on('external_message', packet => {
             // Append the received message to the messages.
             appendMessage(message, "other");
         }
-        else if (functionType == 2) {
-            let dfHellParameters = message.split(",");
-            let q = parseInt(dfHellParameters[0].slice(2));
-            let alpha = parseInt(dfHellParameters[1].slice(2));
-            let otherY = parseInt(dfHellParameters[2].slice(2));
+        else if (functionType == 2 || functionType == 3){
+            var dfHellParameters = message.split(",");
+            var otherY = parseInt(dfHellParameters[2].slice(2));
 
-            let y = calculateY(alpha, q, 233);
-            calculateKey(q, otherY, 233);
-            console.log(y)
-            console.log(key);
+            if (functionType == 2) {
+                q = parseInt(dfHellParameters[0].slice(2));
+                alpha = parseInt(dfHellParameters[1].slice(2));
+                let messageTemplate = new ASCPMessage();
+                let y = calculateY(alpha, q, x);                
+                messageTemplate.setInitMessages(3, alpha, q, y);
+                let msj = Array.from(messageTemplate.getDatos());
+                socket.io.emit('send-chat-message', msj);
+            }
+
+            calculateKey(q, otherY, x);
+            keyValue.value = key;
         }
+        
     }
     else if(key != undefined) {
         var decryption_key = CryptoJS.enc.Hex.parse(key);
@@ -82,21 +93,15 @@ destinationForm.addEventListener('submit', e => {
         chatName2.innerHTML = destination;
     }
     socket.emit('set-destination', destination);
+    if (destination != '') {
+        let y = calculateY(alpha, q, x);
+        let messageTemplate = new ASCPMessage();
+        messageTemplate.setInitMessages(2, alpha, q, y);
+        let msj = Array.from(messageTemplate.getDatos());
+        socket.io.emit('send-chat-message', msj);
+    }
 });
 
-keyForm.addEventListener('submit', e => {
-    // Avoid page reloading when submitting a form.
-    e.preventDefault();
-
-    if(keyInput.value == '') {
-        key = undefined;
-        keyValue.innerHTML = "No key";
-    }
-    else {
-        key = keyInput.value;
-        keyValue.innerHTML = key;
-    }   
-})
 
 messageForm.addEventListener('submit', e => {
     // Avoid page reloading when submitting a form.

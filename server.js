@@ -62,6 +62,7 @@ io.on('connect', socket => {
             // If there is not defined a external socket yet.
             if (c != undefined) {
                 c.destroy();
+                socket.broadcast.emit('no_key');
             }
 
             c = net.createConnection(2020, destination);
@@ -76,6 +77,7 @@ io.on('connect', socket => {
                 if(c) {
                     console.log("External client disconnected");
                     c.destroy();
+                    socket.broadcast.emit('no_key');
                 }
                 c = undefined;
             })
@@ -86,6 +88,7 @@ io.on('connect', socket => {
             if(c) {
                 console.log("Killed connection to external server");
                 c.destroy();
+                socket.broadcast.emit('no_key');
             }
             c = undefined;
         }
@@ -114,6 +117,7 @@ const server = new net.Server((socket) => {
         if(c) {
             c.destroy();
             c = undefined;
+            socket.broadcast.emit('no_key');
         }
         socket.destroy();
         console.log("Client disconnected");

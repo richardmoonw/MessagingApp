@@ -51,8 +51,10 @@ class ASCPMessage {
         }
     }
 
-    setFunction(type) {
-        this.message[this.OFFSET_FUNCION] = type;
+    setInitMessages(func, alpha, q, y) {
+        this.message[this.OFFSET_FUNCION] = func;
+        var message = "q={0},alpha={1},y={2}".format(q, alpha, y);
+        this.setDatos(message);
     }
 }
 
