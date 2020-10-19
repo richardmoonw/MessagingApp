@@ -12,7 +12,7 @@ import * as bigintCryptoUtils from './lib/index.browser.bundle.mod.js'
 
 var key = undefined;
 var alpha = 17123207, q = 2426697107;
-var x = (Math.random() % (q-1)) + 1;
+var x = parseInt(Math.floor(Math.random() * (q-1))) + 1;
 
 socket.on('no_key', () => {
     key = undefined;
@@ -35,7 +35,7 @@ socket.on('external_message', packet => {
             if (functionType == 2) {
                 q = parseInt(dfHellParameters[0].slice(2));
                 alpha = parseInt(dfHellParameters[1].slice(2));
-                x = (Math.random() % (q-1)) + 1
+                x = parseInt(Math.floor(Math.random() * (q-1))) + 1;
                 let messageTemplate = new ASCPMessage();
                 let y = calculateY(alpha, q, x);                
                 messageTemplate.setInitMessages(3, alpha, q, y);
@@ -44,6 +44,7 @@ socket.on('external_message', packet => {
             }
             calculateKey(q, otherY, x);
             addPadding();
+            console.log("Y " + otherY + "Key " + key);
 
             keyValue.innerHTML = key;
         }
