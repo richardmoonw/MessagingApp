@@ -6,7 +6,7 @@
         <link rel="stylesheet" href="bootstrap.css">
         <link rel="stylesheet" href="styles.css">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js"></script>
-        <script defer src='http://192.168.1.99:3000/socket.io/socket.io.js'></script>
+        <script defer src='http://172.16.112.128:3000/socket.io/socket.io.js'></script>
         <script defer type="module" src='message_template.js'></script>
         <script defer type="module" src='script.js'></script>
     </head>
@@ -55,7 +55,6 @@
                             <div class="row" style="padding: 0rem 0rem 0rem 1rem;">
                                 <p id="key-value" style="margin:0; font-size: 0.8rem; color: darkgray;">No key</p>
                             </div>
-                            
                         </div>
                     </div>
              
@@ -76,18 +75,7 @@
                     <div class="row chat-container">
                         <div style="width: 100%;" id="message-container"></div>
                     </div>
-                    
-                    <form id="key-form">
-                        <div class="row message-element">
-                            <div class="col-lg-6">
-                                <input type="text" class="form-control destination-input" id="key" placeholder="Type the Key"
-                                        maxlength="16">
-                            </div>
-                            <div class="col-lg-2">
-                                <button id="set-key" type="submit" class="btn btn-primary" style="border-radius: 1000px;">Set</button>
-                            </div>   
-                        </div>
-                    </form>
+
                     <form id="message-form">
                         <div class="row message-element">
                             <div class="col-lg-10">

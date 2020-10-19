@@ -1,4 +1,4 @@
-const socket = io('http://192.168.1.99:3000');
+const socket = io('http://172.16.112.128:3000');
 const messageForm = document.getElementById('message-form');
 const destinationForm = document.getElementById('destination-form');
 const destinationInput = document.getElementById('destination');
@@ -11,15 +11,15 @@ import ASCPMessage from './message_template.js';
 import * as bigintCryptoUtils from './lib/index.browser.bundle.mod.js'
 
 var key = undefined;
-var x = 233, alpha = 3, q = 353;
+var alpha = 17123207, q = 2426697107;
+var x = (Math.random() % (q-1)) + 1;
 
 socket.on('no_key', () => {
     key = undefined;
-    keyValue.value = 'No key';
+    keyValue.innerHTML = 'No key';
 });
 
 socket.on('external_message', packet => {
-
     if(key == undefined) {
         var functionType = packet[10];
         let msg_size = packet[9];
@@ -35,17 +35,18 @@ socket.on('external_message', packet => {
             if (functionType == 2) {
                 q = parseInt(dfHellParameters[0].slice(2));
                 alpha = parseInt(dfHellParameters[1].slice(2));
+                x = (Math.random() % (q-1)) + 1
                 let messageTemplate = new ASCPMessage();
                 let y = calculateY(alpha, q, x);                
                 messageTemplate.setInitMessages(3, alpha, q, y);
                 let msj = Array.from(messageTemplate.getDatos());
-                socket.io.emit('send-chat-message', msj);
+                socket.emit('send-chat-message', msj);
             }
-
             calculateKey(q, otherY, x);
-            keyValue.value = key;
+            addPadding();
+
+            keyValue.innerHTML = key;
         }
-        
     }
     else if(key != undefined) {
         var decryption_key = CryptoJS.enc.Hex.parse(key);
@@ -98,7 +99,7 @@ destinationForm.addEventListener('submit', e => {
         let messageTemplate = new ASCPMessage();
         messageTemplate.setInitMessages(2, alpha, q, y);
         let msj = Array.from(messageTemplate.getDatos());
-        socket.io.emit('send-chat-message', msj);
+        socket.emit('send-chat-message', msj);
     }
 });
 
@@ -234,4 +235,15 @@ function calculateKey(q, otherY, x) {
     // Fast exponentiation
     let internalKey = bigintCryptoUtils.modPow(otherY, x, q);
     key = parseInt(internalKey);
+}
+
+function addPadding() { 
+    const key_size = 14;
+    const actual_size = key.length;
+    const zeros = key_size - actual_size;
+    var new_key = ''
+    for(var i = 1; i <= zeros; i++){
+        new_key = new_key + '0';
+    }
+    key = new_key + key;
 }
