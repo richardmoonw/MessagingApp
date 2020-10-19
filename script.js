@@ -21,7 +21,7 @@ socket.on('no_key', trash => {
 
 socket.on('external_message', packet => {
     if(key == undefined) {
-        var functionType = packet[10];
+        var functionType = packet[11];
         let msg_size = packet[9];
         let message = Utf8ArrayToStr(packet, 20, msg_size);
         if (functionType == 1) {
@@ -239,8 +239,9 @@ function calculateKey(q, otherY, x) {
 }
 
 function addPadding() { 
-    const key_size = 14;
-    const actual_size = key.length;
+    const key_size = 16;
+    key = key.toString(16);
+    const actual_size = key.toString().length;
     const zeros = key_size - actual_size;
     var new_key = ''
     for(var i = 1; i <= zeros; i++){
