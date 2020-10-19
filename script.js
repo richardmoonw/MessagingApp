@@ -14,7 +14,7 @@ var key = undefined;
 var alpha = 17123207, q = 2426697107;
 var x = parseInt(Math.floor(Math.random() * (q-1))) + 1;
 
-socket.on('no_key', () => {
+socket.on('no_key', trash => {
     key = undefined;
     keyValue.innerHTML = 'No key';
 });
