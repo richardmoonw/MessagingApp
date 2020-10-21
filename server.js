@@ -21,6 +21,11 @@ app.get('/message_template.js', (req, res) => {
     res.sendFile(__dirname + '/message_template.js');
 });
 
+// Routing function to provide the index.browser.bundle.mod.js file.
+app.get('/lib/index.browser.bundle.mod.js', (req, res) => {
+    res.sendFile(__dirname + '/lib/index.browser.bundle.mod.js');
+});
+
 // Routing function to provide the bootstrap.css file to the index page.
 app.get('/bootstrap.css', (req, res) => {
     res.sendFile(__dirname + '/bootstrap.css');
@@ -57,6 +62,7 @@ io.on('connect', socket => {
             // If there is not defined a external socket yet.
             if (c != undefined) {
                 c.destroy();
+                socket.emit('no_key', '');
             }
 
             c = net.createConnection(2020, destination);
@@ -71,6 +77,7 @@ io.on('connect', socket => {
                 if(c) {
                     console.log("External client disconnected");
                     c.destroy();
+                    socket.emit('no_key', '');
                 }
                 c = undefined;
             })
@@ -81,6 +88,7 @@ io.on('connect', socket => {
             if(c) {
                 console.log("Killed connection to external server");
                 c.destroy();
+                socket.emit('no_key', '');
             }
             c = undefined;
         }
@@ -109,6 +117,7 @@ const server = new net.Server((socket) => {
         if(c) {
             c.destroy();
             c = undefined;
+            io.emit('no_key', '');
         }
         socket.destroy();
         console.log("Client disconnected");
@@ -117,6 +126,7 @@ const server = new net.Server((socket) => {
     // Receive data from other servers and send it to the client.
     socket.on('data', (data) => {
         var packet = Array.prototype.slice.call(data, 0);
+        console.log(packet);
         io.emit('external_message', packet);
     })
 });

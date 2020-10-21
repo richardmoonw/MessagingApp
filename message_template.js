@@ -20,7 +20,9 @@ class ASCPMessage {
         this.message[this.OFFSET_ESTADO + 1] = 0
         this.message[this.OFFSET_ID_SESION    ] = 0
         this.message[this.OFFSET_ID_SESION + 1] = 0
+        // Cambiar a 0 si hay algun problema.
         this.message[this.OFFSET_FUNCION] = 0
+        this.message[this.OFFSET_FUNCION + 1] = 1
     }
 
     setDatos(datos){
@@ -36,7 +38,7 @@ class ASCPMessage {
         return this.message
     }
 
-    showDatos(){
+    showDatos() {
         this.message.forEach(element => console.log(element));
     }
 
@@ -49,6 +51,12 @@ class ASCPMessage {
         for(var i = this.OFFSET_DATOS;i < this.OFFSET_DATOS + this.message[OFFSET_TAM_DATOS];i++){
             t = t + this.message[i]
         }
+    }
+
+    setInitMessages(func, alpha, q, y) {
+        this.message[this.OFFSET_FUNCION+1] = func;
+        var message = "q="+q+",a="+alpha+",y="+y;
+        this.setDatos(message);
     }
 }
 
