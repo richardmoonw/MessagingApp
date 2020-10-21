@@ -126,6 +126,7 @@ const server = new net.Server((socket) => {
     // Receive data from other servers and send it to the client.
     socket.on('data', (data) => {
         var packet = Array.prototype.slice.call(data, 0);
+        console.log(packet);
         io.emit('external_message', packet);
     })
 });

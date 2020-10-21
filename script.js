@@ -24,6 +24,7 @@ socket.on('external_message', packet => {
         var functionType = packet[11];
         let msg_size = packet[9];
         let message = Utf8ArrayToStr(packet, 20, msg_size);
+        console.log(message);
         if (functionType == 1) {
             // Append the received message to the messages.
             appendMessage(message, "other");
@@ -37,14 +38,14 @@ socket.on('external_message', packet => {
                 alpha = parseInt(dfHellParameters[1].slice(2));
                 x = parseInt(Math.floor(Math.random() * (q-1))) + 1;
                 let messageTemplate = new ASCPMessage();
-                let y = calculateY(alpha, q, x);                
+                let y = calculateY(alpha, q, x);               
                 messageTemplate.setInitMessages(3, alpha, q, y);
                 let msj = Array.from(messageTemplate.getDatos());
+                console.log(msj)
                 socket.emit('send-chat-message', msj);
             }
             calculateKey(q, otherY, x);
             addPadding();
-            console.log("Y " + otherY + "Key " + key);
 
             keyValue.innerHTML = key;
         }
