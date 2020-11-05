@@ -75,11 +75,14 @@ socket.on('external_message', packet => {
         packet = convertWordArrayToUint8Array(decrypted);
 
         // Calculate the mac
-        const messageToHash = packet.slice(236);
-        let calculatedMac = CryptoJS.SHA1(messageToHash);
+        const messageToHash = packet.slice(0, 236);
+        let calculatedMac = CryptoJS.SHA1(convertUint8ArrayToWordArray(messageToHash));
         calculatedMac = convertWordArrayToUint8Array(calculatedMac);
 
         let receivedMac = packet.slice(236, 256);
+
+        console.log(calculatedMac);
+        console.log(receivedMac);
 
         if(calculatedMac != receivedMac) {
             alert("Incorrect Mac")
@@ -123,7 +126,7 @@ messageForm.addEventListener('submit', e => {
     const message = messageInput.value;
     
     // Create an instance of ASCPMessage and set its data. 
-    const message_template = new ASCPMessage();
+    let message_template = new ASCPMessage();
     message_template.setDatos(message);
 
     // Declare the mac
@@ -134,10 +137,9 @@ messageForm.addEventListener('submit', e => {
         mac = CryptoJS.SHA1("0");
     }
     else {
-        const messageToHash = message_template.getDatos().slice(236);
-        mac = CryptoJS.SHA1(messageToHash);
+        const messageToHash = message_template.getDatos().slice(0,236);
+        mac = CryptoJS.SHA1(convertUint8ArrayToWordArray(messageToHash));
     }
-    
     mac = convertWordArrayToUint8Array(mac);
     message_template.setMac(mac);
 
