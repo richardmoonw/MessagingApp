@@ -13,6 +13,7 @@
     <body class="body-background">
         <div class="container">
             <div class="row main-screen">
+
                 <!-- Left Panel -->
                 <div class="col-lg-4 left-panel">
                     <div class="row header-element">
@@ -80,12 +81,14 @@
                         <div class="row message-element">
                             <div class="col-lg-10">
                                 <textarea class="form-control message-input" rows="2" id="message" placeholder="Type your message" 
-                                            maxlength="236"></textarea>
+                                            maxlength="216"></textarea>
                             </div>
                             <div class="col-lg-2">
                                 <button id="send-button" type="submit" class="btn btn-primary" style="border-radius: 1000px;">Send</button>
                             </div>    
                         </div>
+                        <label for="mac">Incorrect MAC</label><br>
+                        <input type="checkbox" id="mac">
                     </form>
                 </div>
             </div>

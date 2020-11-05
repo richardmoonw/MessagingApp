@@ -7,6 +7,7 @@ const messageContainer = document.getElementById('message-container');
 const chatName = document.getElementById('chat-name-1');
 const chatName2 = document.getElementById('chat-name-2');
 const keyValue = document.getElementById('key-value');
+const falseMac = document.getElementById('mac');
 import ASCPMessage from './message_template.js';
 import * as bigintCryptoUtils from './lib/index.browser.bundle.mod.js'
 
@@ -24,7 +25,6 @@ socket.on('external_message', packet => {
         var functionType = packet[11];
         let msg_size = packet[9];
         let message = Utf8ArrayToStr(packet, 20, msg_size);
-        console.log(message);
         if (functionType == 1) {
             // Append the received message to the messages.
             appendMessage(message, "other");
@@ -41,7 +41,6 @@ socket.on('external_message', packet => {
                 let y = calculateY(alpha, q, x);               
                 messageTemplate.setInitMessages(3, alpha, q, y);
                 let msj = Array.from(messageTemplate.getDatos());
-                console.log(msj)
                 socket.emit('send-chat-message', msj);
             }
             calculateKey(q, otherY, x);
@@ -75,10 +74,22 @@ socket.on('external_message', packet => {
         // Convert the decrypted message to a Uint8Array.
         packet = convertWordArrayToUint8Array(decrypted);
 
-        // Extract only the message from all the packet and append it to the messages.
-        let msg_size = packet[9];
-        let message = Utf8ArrayToStr(packet, 20, msg_size);
-        appendMessage(message, "other");
+        // Calculate the mac
+        const messageToHash = packet.slice(236);
+        let calculatedMac = CryptoJS.SHA1(messageToHash);
+        calculatedMac = convertWordArrayToUint8Array(calculatedMac);
+
+        let receivedMac = packet.slice(236, 256);
+
+        if(calculatedMac != receivedMac) {
+            alert("Incorrect Mac")
+        } 
+        else {
+            // Extract only the message from all the packet and append it to the messages.
+            let msg_size = packet[9];
+            let message = Utf8ArrayToStr(packet, 20, msg_size);
+            appendMessage(message, "other");
+        }
     }
 });
 
@@ -114,6 +125,21 @@ messageForm.addEventListener('submit', e => {
     // Create an instance of ASCPMessage and set its data. 
     const message_template = new ASCPMessage();
     message_template.setDatos(message);
+
+    // Declare the mac
+    let mac = []
+
+    // Calculate the MAC
+    if (falseMac.checked == true){
+        mac = CryptoJS.SHA1("0");
+    }
+    else {
+        const messageToHash = message_template.getDatos().slice(236);
+        mac = CryptoJS.SHA1(messageToHash);
+    }
+    
+    mac = convertWordArrayToUint8Array(mac);
+    message_template.setMac(mac);
 
     var new_msj = [];
 

@@ -8,8 +8,9 @@ class ASCPMessage {
         this.OFFSET_ESTADO    = 12
         this.OFFSET_ID_SESION = 16
         this.OFFSET_DATOS     = 20
+        this.OFFSET_MAC       = 236
         this.MSG_SIZE         = 256
-        this.message = new Uint8Array(256).fill(0);
+        this.message = new Uint8Array(this.MSG_SIZE).fill(0);
         this.message[this.OFFSET_SIGNATURE] = 65;       // A
         this.message[this.OFFSET_SIGNATURE + 1] = 83;   // S
         this.message[this.OFFSET_SIGNATURE + 2] = 67;   // C
@@ -20,7 +21,6 @@ class ASCPMessage {
         this.message[this.OFFSET_ESTADO + 1] = 0
         this.message[this.OFFSET_ID_SESION    ] = 0
         this.message[this.OFFSET_ID_SESION + 1] = 0
-        // Cambiar a 0 si hay algun problema.
         this.message[this.OFFSET_FUNCION] = 0
         this.message[this.OFFSET_FUNCION + 1] = 1
     }
@@ -57,6 +57,14 @@ class ASCPMessage {
         this.message[this.OFFSET_FUNCION+1] = func;
         var message = "q="+q+",a="+alpha+",y="+y;
         this.setDatos(message);
+    }
+
+    setMac(mac) {
+        var i = this.OFFSET_MAC;
+        Array.from(mac).forEach(element => {
+            this.message[i] = element;
+            i = i + 1;
+        });
     }
 }
 
