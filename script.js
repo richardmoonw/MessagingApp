@@ -1,5 +1,8 @@
 const socket = io('http://172.16.112.128:3000');
 const messageForm = document.getElementById('message-form');
+const loginForm = document.getElementById('login-form');
+const emailInput = document.getElementById('email');
+const passwordInput = document.getElementById('password');
 const destinationForm = document.getElementById('destination-form');
 const destinationInput = document.getElementById('destination');
 const messageInput = document.getElementById('message');
@@ -8,6 +11,11 @@ const chatName = document.getElementById('chat-name-1');
 const chatName2 = document.getElementById('chat-name-2');
 const keyValue = document.getElementById('key-value');
 const falseMac = document.getElementById('mac');
+const objectParagraph = document.getElementById('objectId');
+const userParagraph = document.getElementById('user_token');
+var user_token = '';
+var objectId = '';
+const myIP = '172.16.112.128'
 import ASCPMessage from './message_template.js';
 import * as bigintCryptoUtils from './lib/index.browser.bundle.mod.js'
 
@@ -81,10 +89,7 @@ socket.on('external_message', packet => {
 
         let receivedMac = packet.slice(236, 256);
 
-        console.log(calculatedMac);
-        console.log(receivedMac);
-
-        if(calculatedMac != receivedMac) {
+        if(JSON.stringify(calculatedMac) != JSON.stringify(receivedMac)) {
             alert("Incorrect Mac")
         } 
         else {
@@ -101,28 +106,73 @@ destinationForm.addEventListener('submit', e => {
     e.preventDefault();
 
     const destination = destinationInput.value;
-    if (destination == ''){
-        chatName.innerHTML = 'General';
-        chatName2.innerHTML = 'General';
+
+    async function getUserIP() {
+        const ip = await getIP(destination);
+        var destinationIP = ip[0].last_ip;
+        
+        if (destination == ''){
+            chatName.innerHTML = 'General';
+            chatName2.innerHTML = 'General';
+        }
+        else {
+            chatName.innerHTML = destinationIP;
+            chatName2.innerHTML = destinationIP;
+        }
+        socket.emit('set-destination', destinationIP);
+        if (destination != '') {
+            let y = calculateY(alpha, q, x);
+            let messageTemplate = new ASCPMessage();
+            messageTemplate.setInitMessages(2, alpha, q, y);
+            let msj = Array.from(messageTemplate.getDatos());
+            socket.emit('send-chat-message', msj);
+        }
     }
-    else {
-        chatName.innerHTML = destination;
-        chatName2.innerHTML = destination;
-    }
-    socket.emit('set-destination', destination);
-    if (destination != '') {
-        let y = calculateY(alpha, q, x);
-        let messageTemplate = new ASCPMessage();
-        messageTemplate.setInitMessages(2, alpha, q, y);
-        let msj = Array.from(messageTemplate.getDatos());
-        socket.emit('send-chat-message', msj);
-    }
+    getUserIP();
 });
 
+// Function used when login form submitted.
+loginForm.addEventListener('submit', e => {
+    // Avoid page reloading when submitting a form.
+    e.preventDefault();
+
+    // Declare the required variables
+    const email = emailInput.value;
+    const pass = passwordInput.value;
+    const myHeaders = new Headers()
+    myHeaders.append('Content-Type', 'application/json')
+        const myRequest = new Request('https://api.backendless.com/9176FE65-2FB5-2B00-FFED-BEB6A480BC00/0397420A-AA65-4BA2-9A1F-D4C9583099C8/users/login', 
+                                        {method: 'POST', 
+                                         body: `{"login": "${email}", "password": "${pass}"}`,
+                                         headers: myHeaders});
+
+        function asyncCall() {
+            return fetch(myRequest)
+                .then(response => {
+                    if (response.status === 200) {
+                        return response.json()
+                    } else {
+                        throw new Error('Something went wrong on api server!');
+                    }
+                })
+        }
+        async function asyncCall2(){
+            const user_data = await asyncCall()
+            user_token = user_data["user-token"]
+            objectId = user_data.objectId
+            objectParagraph.innerHTML = objectId;
+            userParagraph.innerHTML = user_token;
+            await setIP()
+        }
+
+        asyncCall2();
+});
 
 messageForm.addEventListener('submit', e => {
     // Avoid page reloading when submitting a form.
     e.preventDefault();
+
+    // Declare the required variables
     const message = messageInput.value;
     
     // Create an instance of ASCPMessage and set its data. 
@@ -175,7 +225,41 @@ messageForm.addEventListener('submit', e => {
     messageInput.value = '';
 });
 
+function setIP() {
+    const myHeaders = new Headers()
+    myHeaders.append('Content-Type', 'application/json');
+    myHeaders.append('user-token', user_token);
+        const myRequest = new Request(`https://api.backendless.com/9176FE65-2FB5-2B00-FFED-BEB6A480BC00/0397420A-AA65-4BA2-9A1F-D4C9583099C8/data/Users/${objectId}`, 
+                                        {method: 'PUT', 
+                                         body: `{"last_ip": "${myIP}"}`,
+                                         headers: myHeaders});
 
+    return fetch(myRequest)
+        .then(response => {
+            if (response.status === 200) {
+                return response.json()
+            } else {
+                throw new Error('Something went wrong on api server!');
+            }
+        })
+}
+
+function getIP(email) {
+    const myHeaders = new Headers()
+    myHeaders.append('Content-Type', 'application/json');
+    myHeaders.append('user-token', user_token);
+        const myRequest = new Request(`https://api.backendless.com/9176FE65-2FB5-2B00-FFED-BEB6A480BC00/0397420A-AA65-4BA2-9A1F-D4C9583099C8/data/Users?where=email%3D%27${email}%27`, 
+                                        {method: 'GET', headers: myHeaders});
+
+    return fetch(myRequest)
+        .then(response => {
+            if (response.status === 200) {
+                return response.json()
+            } else {
+                throw new Error('Something went wrong on api server!');
+            }
+        })
+}
 
 function appendMessage(message, sender) {
     const messageElement = document.createElement('div');
