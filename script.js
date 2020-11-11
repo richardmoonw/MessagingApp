@@ -28,19 +28,28 @@ socket.on('no_key', trash => {
     keyValue.innerHTML = 'No key';
 });
 
+// Event used to receive messages from the server
 socket.on('external_message', packet => {
     if(key == undefined) {
+
+        // Extract the function type and the message size from the message packet.
         var functionType = packet[11];
         let msg_size = packet[9];
+
+        // Convert the int array to string
         let message = Utf8ArrayToStr(packet, 20, msg_size);
+
+        // It is a simple message.
         if (functionType == 1) {
             // Append the received message to the messages.
             appendMessage(message, "other");
         }
+        // It is a message to define a key with Diffie-Hellman
         else if (functionType == 2 || functionType == 3){
             var dfHellParameters = message.split(",");
             var otherY = parseInt(dfHellParameters[2].slice(2));
 
+            // If we are the one initializing the connection.
             if (functionType == 2) {
                 q = parseInt(dfHellParameters[0].slice(2));
                 alpha = parseInt(dfHellParameters[1].slice(2));
@@ -101,21 +110,27 @@ socket.on('external_message', packet => {
     }
 });
 
+// Event used to define a destination when submitting the corresponding form.
 destinationForm.addEventListener('submit', e => {
+
     // Avoid page reloading when submitting a form.
     e.preventDefault();
 
+    // Get the destination email.
     const destination = destinationInput.value;
 
+    // Get the wished user IP and create an event to make a connection.
     async function getUserIP() {
-        const ip = await getIP(destination);
-        var destinationIP = ip[0].last_ip;
-        
+        var destinationIP = ''
         if (destination == ''){
             chatName.innerHTML = 'General';
             chatName2.innerHTML = 'General';
         }
         else {
+            // Get the ip of the specified user.
+            const ip = await getIP(destination);
+            destinationIP = ip[0].last_ip;
+            
             chatName.innerHTML = destinationIP;
             chatName2.innerHTML = destinationIP;
         }
@@ -139,6 +154,8 @@ loginForm.addEventListener('submit', e => {
     // Declare the required variables
     const email = emailInput.value;
     const pass = passwordInput.value;
+
+    // Create the request.
     const myHeaders = new Headers()
     myHeaders.append('Content-Type', 'application/json')
         const myRequest = new Request('https://api.backendless.com/9176FE65-2FB5-2B00-FFED-BEB6A480BC00/0397420A-AA65-4BA2-9A1F-D4C9583099C8/users/login', 
@@ -146,7 +163,8 @@ loginForm.addEventListener('submit', e => {
                                          body: `{"login": "${email}", "password": "${pass}"}`,
                                          headers: myHeaders});
 
-        function asyncCall() {
+        // Function used to return the promise.
+        function login() {
             return fetch(myRequest)
                 .then(response => {
                     if (response.status === 200) {
@@ -156,8 +174,11 @@ loginForm.addEventListener('submit', e => {
                     }
                 })
         }
-        async function asyncCall2(){
-            const user_data = await asyncCall()
+
+        // Function used to wait the promise to be resolved and update the
+        // corresponding values.
+        async function getUserData(){
+            const user_data = await login()
             user_token = user_data["user-token"]
             objectId = user_data.objectId
             objectParagraph.innerHTML = objectId;
@@ -165,10 +186,12 @@ loginForm.addEventListener('submit', e => {
             await setIP()
         }
 
-        asyncCall2();
+        getUserData();
 });
 
+// Event triggered when it is pretended to send a message.
 messageForm.addEventListener('submit', e => {
+
     // Avoid page reloading when submitting a form.
     e.preventDefault();
 
@@ -179,7 +202,7 @@ messageForm.addEventListener('submit', e => {
     let message_template = new ASCPMessage();
     message_template.setDatos(message);
 
-    // Declare the mac
+    // Declare the MAC.
     let mac = []
 
     // Calculate the MAC
@@ -225,7 +248,10 @@ messageForm.addEventListener('submit', e => {
     messageInput.value = '';
 });
 
+// Function used to set the user IP.
 function setIP() {
+
+    // Create the request.
     const myHeaders = new Headers()
     myHeaders.append('Content-Type', 'application/json');
     myHeaders.append('user-token', user_token);
@@ -244,7 +270,10 @@ function setIP() {
         })
 }
 
+// Function used to get a user IP.
 function getIP(email) {
+
+    // Create the request.
     const myHeaders = new Headers()
     myHeaders.append('Content-Type', 'application/json');
     myHeaders.append('user-token', user_token);
@@ -261,6 +290,7 @@ function getIP(email) {
         })
 }
 
+// Function used to append a message to the chat.
 function appendMessage(message, sender) {
     const messageElement = document.createElement('div');
     var formattedMessage = '';
