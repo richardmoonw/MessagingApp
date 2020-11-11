@@ -13,13 +13,21 @@
     <body class="body-background">
         <div class="container">
             <div class="row main-screen">
+
                 <!-- Left Panel -->
                 <div class="col-lg-4 left-panel">
                     <div class="row header-element">
                         <div class="col-lg-2 image-container">
                             <img class="circular-img" src="https://diariolalibertad.com/sitio/wp-content/uploads/2020/09/Cristiano-Ronaldo.jpg">
                         </div>
-                        <div class="col-lg-4"></div>
+                        <div class="col-lg-4">
+                            <div class="row">
+                                <p class="special-info" id="objectId"></p>
+                            </div>
+                            <div class="row">
+                                <p class="special-info" id="user_token"></p>
+                            </div>
+                        </div>
                         <div class="col-lg-1 myprofile-icon">
                             <i class="fa fa-circle-o-notch fa-lg" aria-hidden="true"></i>
                         </div>
@@ -57,7 +65,19 @@
                             </div>
                         </div>
                     </div>
-             
+                    
+                    <!-- Login Form -->
+                    <div style="height: 60vh;"></div>
+                    <h5>Login</h5>
+                    <form id="login-form">
+                        <div class="form-group">
+                            <input type="email" class="form-control" id="email" placeholder="Email">
+                        </div>
+                        <div class="form-group">
+                            <input type="password" class="form-control" id="password" placeholder="Password">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Login</button>
+                    </form>
                 </div>
 
                 <!-- Right Panel -->
@@ -80,12 +100,18 @@
                         <div class="row message-element">
                             <div class="col-lg-10">
                                 <textarea class="form-control message-input" rows="2" id="message" placeholder="Type your message" 
-                                            maxlength="236"></textarea>
+                                            maxlength="216"></textarea>
                             </div>
                             <div class="col-lg-2">
                                 <button id="send-button" type="submit" class="btn btn-primary" style="border-radius: 1000px;">Send</button>
                             </div>    
                         </div>
+                        <div class="row mac-checkbox">
+                            <div class="form-group form-check">
+                                <input type="checkbox" class="form-check-input" id="mac">
+                                <label class="form-check-label" for="mac">Incorrect MAC</label>
+                            </div>
+                        </div>  
                     </form>
                 </div>
             </div>
