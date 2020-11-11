@@ -119,8 +119,22 @@ const server = new net.Server((socket) => {
             c = undefined;
             io.emit('no_key', '');
         }
-        socket.destroy();
+        if (socket.destroyed == false) {
+            socket.destroy();
+        } 
         console.log("Client disconnected");
+    });
+
+    // Connection with a client died suddenly.
+    socket.on('error', () => {
+        // Comentar en caso de fallas
+        if(c) {
+            c.destroy();
+            c = undefined;
+            io.emit('no_key', '');
+        }
+        socket.destroy();
+        console.log("Client died");
     });
 
     // Receive data from other servers and send it to the client.
@@ -128,7 +142,7 @@ const server = new net.Server((socket) => {
         var packet = Array.prototype.slice.call(data, 0);
         console.log(packet);
         io.emit('external_message', packet);
-    })
+    });
 });
 
 server.listen(2020, () => {
