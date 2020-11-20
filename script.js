@@ -230,7 +230,8 @@ messageForm.addEventListener('submit', e => {
 
         // Encrypt the message's WordArray with the given key (ECB mode and no padding).
         var encrypted = CryptoJS.DES.encrypt(message_wordArray, encryption_key, {
-            mode: CryptoJS.mode.ECB
+            mode: CryptoJS.mode.ECB,
+            padding: CryptoJS.pad.NoPadding
         });
 
         // Encrypt the message, convert the resulting WordArray to an Uint8Array and then
@@ -242,6 +243,7 @@ messageForm.addEventListener('submit', e => {
         new_msj = Array.from(message_template.getDatos())
     }
 
+    console.log(new_msj);
     // Append the message to the message container and send it to the server socket.
     appendMessage(message, "me");
     socket.emit('send-chat-message', new_msj);
